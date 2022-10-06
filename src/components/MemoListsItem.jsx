@@ -1,5 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import {
+  StyleSheet, View, Text, TouchableOpacity,
+} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 export default function MemoListsItem() {
@@ -12,9 +14,9 @@ export default function MemoListsItem() {
           <Text style={styles.memoListsItemData}>2022年10月6日</Text>
         </View>
         {/* 削除ボタン */}
-        <View>
+        <TouchableOpacity>
           <Feather name="x" size={16} color="gray" />
-        </View>
+        </TouchableOpacity>
       </View>
       <View style={styles.memoListsItem}>
         {/* リストの左側 */}
@@ -23,9 +25,9 @@ export default function MemoListsItem() {
           <Text style={styles.memoListsItemData}>2022年10月6日</Text>
         </View>
         {/* 削除ボタン */}
-        <View>
+        <TouchableOpacity>
           <Feather name="x" size={16} color="gray" />
-        </View>
+        </TouchableOpacity>
       </View>
       <View style={styles.memoListsItem}>
         {/* リストの左側 */}
@@ -34,9 +36,9 @@ export default function MemoListsItem() {
           <Text style={styles.memoListsItemData}>2022年10月6日</Text>
         </View>
         {/* 削除ボタン */}
-        <View>
+        <TouchableOpacity>
           <Feather name="x" size={16} color="gray" />
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
