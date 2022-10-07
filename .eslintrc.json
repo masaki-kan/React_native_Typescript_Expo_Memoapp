@@ -17,6 +17,15 @@
     ],
     "rules": {
         /** 定義する前に使われていてもエラーが出ないようにする **/
-        "no-use-before-define": 0
+        "no-use-before-define": 0,
+        "react/prop-types": [
+            "error",
+            {
+                "ignore": [
+                    /** ナビゲーションのpropのエラー回避 */
+                    "navigation"
+                ]
+            }
+        ]
     }
 }

@@ -1,14 +1,16 @@
+import { PropTypes } from 'prop-types';
 import React from 'react';
 import {
   StyleSheet, View, Text, ScrollView,
 } from 'react-native';
-import AppBar from '../components/AppBar';
+
 import CircleButton from '../components/CircleButton';
 
-export default function MemoDetailScreen() {
+export default function MemoDetailScreen(props) {
+  const { navigation } = props;
   return (
     <View style={styles.container}>
-      <AppBar />
+
       <View style={styles.MemoHeader}>
         <Text style={styles.MemoHeaderTitle}>買い物リスト</Text>
         <Text style={styles.MemoHeaderDate}>2022年10月6日</Text>
@@ -21,10 +23,26 @@ export default function MemoDetailScreen() {
           コンポーネントの props に型チェックを行うために、特別な propTypes プロパティを割当てることができます。
         </Text>
       </ScrollView>
-      <CircleButton style={{ top: 160, bottom: 'auto' }} name="edit-2" />
+      <CircleButton
+        style={{ top: 60, bottom: 'auto' }}
+        name="edit-2"
+        onPress={() => {
+          navigation.navigate('MemoEdit');
+        }}
+      />
     </View>
   );
 }
+
+/* app.js内のStack.Screenで登録すると自動で渡って来る
+渡って来るpropsに対しての設定は環境チームのルールによってなくても大丈夫
+無視する場合は.eslintrc.jsonのrulesプロパティに記入
+*/
+MemoDetailScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
+};
 
 const styles = StyleSheet.create({
   container: {
