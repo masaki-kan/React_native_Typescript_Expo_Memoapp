@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import {
-  View, StyleSheet, Text, TextInput, TouchableOpacity,
+  View, StyleSheet, Text, TextInput, TouchableOpacity, Alert,
 } from 'react-native';
 
 import SubmitButton from '../components/SubmitButton';
+import firebase from 'firebase';  // firebaseと接続するために必須
 
 export default function SingUpScreen(props) {
   /** どちらも分割代入 */
@@ -11,6 +12,24 @@ export default function SingUpScreen(props) {
   /** 状態を保持する */
   const [email, setEmail] = useState('');/* 配列から email, setEmailを取り出す */
   const [passWord, serPassWord] = useState('');
+
+  function handlePress() {
+    // 登録
+    firebase.auth().createUserWithEmailAndPassword(email, passWord)
+      .then((userCredential) => {
+        const { user } = userCredential;
+        console.log(user.uid);
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MemoList' }],
+        });
+      })
+      .catch((error) => {
+        console.log(error.code, error.message);
+        Alert.alert(error.code);
+      });
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.LogInContainer}>
@@ -41,12 +60,7 @@ export default function SingUpScreen(props) {
         />
         <SubmitButton
           name="SingUp"
-          onpress={() => {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'MemoList' }],
-            });
-          }}
+          onpress={handlePress}
         />
         <View style={styles.footer}>
           <Text style={styles.footerText}>Already Registed?</Text>

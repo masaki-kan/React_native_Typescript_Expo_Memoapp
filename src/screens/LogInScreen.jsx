@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import {
-  View, StyleSheet, Text, TextInput, TouchableOpacity,
+  View, StyleSheet, Text, TextInput, TouchableOpacity, Alert,
 } from 'react-native';
 import SubmitButton from '../components/SubmitButton';
+import firebase from 'firebase'; // firebaseと接続するために必須
 
 export default function LogInScreen(props) {
   /** どちらも分割代入 */
@@ -10,12 +11,28 @@ export default function LogInScreen(props) {
   /** 状態を保持する */
   const [email, setEmail] = useState('');/* 配列から email, setEmailを取り出す */
   const [passWord, serPassWord] = useState('');
+
+  function handlePress() {
+    // ログイン
+    firebase.auth().signInWithEmailAndPassword(email, passWord)
+      .then((userCredential) => {
+        const { user } = userCredential;
+        console.log(user.uid);
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MemoList' }],
+        });
+      })
+      .catch((error) => {
+        Alert.alert(error.code);
+      });
+  }
+
   return (
     <View style={styles.container}>
 
       <View style={styles.LogInContainer}>
         <Text style={styles.title}>Login</Text>
-        <TextInput value="" placeholder="Email Adress" style={styles.input} />
         <TextInput
           value={email}
           onChangeText={(text) => {
@@ -42,12 +59,7 @@ export default function LogInScreen(props) {
         />
         <SubmitButton
           name="Login"
-          onpress={() => {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'MemoList' }],
-            });
-          }}
+          onpress={handlePress}
         />
         <View style={styles.footer}>
           <Text style={styles.footerText}>Not Registed?</Text>
