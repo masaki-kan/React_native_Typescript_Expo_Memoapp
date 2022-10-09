@@ -4,86 +4,52 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { PropTypes } from 'prop-types'; // propsのtype
 
-export default function MemoListsItem() {
+export default function MemoListsItem(props) {
+  const { memos } = props;
+
   /* useNavigationは
   navigationオブジェクトへのアクセスを与えるフックです。
   navigationプロパティをコンポーネントに直接渡すことができない場合、または深くネストされた子の場合に渡したくない場合に役立ちます。 */
   const navigation = useNavigation();
   return (
     <View>
-      <TouchableOpacity
-        style={styles.memoListsItem}
-        onPress={() => {
-          navigation.navigate('MemoDetail');
-        }}
-      >
-        {/* リストの左側 */}
-        <View>
-          <Text style={styles.memoListsItemTitle}>買い物リスト</Text>
-          <Text style={styles.memoListsItemData}>2022年10月6日</Text>
-        </View>
-        {/* 削除ボタン */}
-        <TouchableOpacity style={styles.memoDelete}>
-          <Feather
-            name="x"
-            size={24}
-            color="gray"
-            onPress={() => {
-              Alert.alert('削除しました。');
-            }}
-          />
+      {memos.map((memo) => (
+        <TouchableOpacity
+          key={memo.id}
+          style={styles.memoListsItem}
+          onPress={() => { navigation.navigate('MemoDetail'); }}
+        >
+          <View>
+            <Text style={styles.memoListsItemTitle}>{memo.bodyText}</Text>
+            <Text style={styles.memoListsItemData}>{String(memo.updatedAt)}</Text>
+          </View>
+          <TouchableOpacity style={styles.memoDelete} >
+            <Feather
+              name="x"
+              size={24}
+              color="gray"
+              onPress={() => {
+                Alert.alert('削除しました。');
+              }}
+            />
+          </TouchableOpacity>
         </TouchableOpacity>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.memoListsItem}
-        onPress={() => {
-          navigation.navigate('MemoDetail');
-        }}
-      >
-        {/* リストの左側 */}
-        <View>
-          <Text style={styles.memoListsItemTitle}>買い物リスト</Text>
-          <Text style={styles.memoListsItemData}>2022年10月6日</Text>
-        </View>
-        {/* 削除ボタン */}
-        <TouchableOpacity style={styles.memoDelete}>
-          <Feather
-            name="x"
-            size={24}
-            color="gray"
-            onPress={() => {
-              Alert.alert('削除しました。');
-            }}
-          />
-        </TouchableOpacity>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.memoListsItem}
-        onPress={() => {
-          navigation.navigate('MemoDetail');
-        }}
-      >
-        {/* リストの左側 */}
-        <View>
-          <Text style={styles.memoListsItemTitle}>買い物リスト</Text>
-          <Text style={styles.memoListsItemData}>2022年10月6日</Text>
-        </View>
-        {/* 削除ボタン */}
-        <TouchableOpacity style={styles.memoDelete}>
-          <Feather
-            name="x"
-            size={24}
-            color="gray"
-            onPress={() => {
-              Alert.alert('削除しました。');
-            }}
-          />
-        </TouchableOpacity>
-      </TouchableOpacity>
+      ))}
     </View>
   );
 }
+
+MemoListsItem.propTypes = {
+  memos: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      data: PropTypes.string,
+      updatedAt: PropTypes.instanceOf(Date),
+    }),
+  ).isRequired,
+};
 
 const styles = StyleSheet.create({
   memoListsItem: {
