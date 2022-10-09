@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    bottom: 43,
+    bottom: 93,
     right: 43,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 0 },

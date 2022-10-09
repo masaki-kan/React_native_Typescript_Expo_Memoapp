@@ -2,7 +2,6 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import firebase from 'firebase';
-import { firebaseConfig } from './env';
 
 import MemoListScreen from './src/screens/MemoListScreen';
 import MemoDetailScreen from './src/screens/MemoDetailScreen';
@@ -11,11 +10,16 @@ import MemoCreateScreen from './src/screens/MemoCreateScreen';
 import LogInScreen from './src/screens/LogInScreen';
 import SingUpScreen from './src/screens/SingUpScreen';
 
-const Stack = createNativeStackNavigator();
+// firebaseの処理
+import { firebaseConfig } from './env';
+
+require('firebase/firestore'); // firebaseのfirestoreを使う
 
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
 }
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (

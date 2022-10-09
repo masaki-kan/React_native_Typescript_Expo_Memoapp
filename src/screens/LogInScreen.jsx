@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, StyleSheet, Text, TextInput, TouchableOpacity, Alert,
 } from 'react-native';
 import SubmitButton from '../components/SubmitButton';
+/* eslint-disable-next-line */ /* 次の文章はeslintは適応させない */
 import firebase from 'firebase'; // firebaseと接続するために必須
 
 export default function LogInScreen(props) {
@@ -11,6 +12,22 @@ export default function LogInScreen(props) {
   /** 状態を保持する */
   const [email, setEmail] = useState('');/* 配列から email, setEmailを取り出す */
   const [passWord, serPassWord] = useState('');
+
+  // ログインの状態を監視
+  useEffect(() => {
+    /* ログイン画面が表示するとき表示 */
+    const unsubscrive = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MemoList' }],
+        });
+      }
+    });
+    /* ログイン画面が消える時にキャセルする */
+    return unsubscrive;
+    /* 第二引数に[]を入れることで一回だけ適応 */
+  }, []);
 
   function handlePress() {
     // ログイン
@@ -59,6 +76,7 @@ export default function LogInScreen(props) {
         />
         <SubmitButton
           name="Login"
+          /* eslint-disable-next-line */ /* 次の文章はeslintは適応させない */
           onpress={handlePress}
         />
         <View style={styles.footer}>

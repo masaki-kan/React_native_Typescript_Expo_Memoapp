@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import {
   View, StyleSheet, Text, TextInput, TouchableOpacity, Alert,
 } from 'react-native';
-
 import SubmitButton from '../components/SubmitButton';
+/* eslint-disable-next-line */ /* 次の文章はeslintは適応させない */
 import firebase from 'firebase';  // firebaseと接続するために必須
 
 export default function SingUpScreen(props) {
