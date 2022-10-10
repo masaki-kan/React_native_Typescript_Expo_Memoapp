@@ -2,6 +2,7 @@ import React from 'react';
 import {
   StyleSheet, View, Text, TouchableOpacity, Alert, FlatList,
 } from 'react-native';
+import firebase from 'firebase';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { PropTypes } from 'prop-types'; // propsのtype
@@ -9,11 +10,32 @@ import { dateToString } from '../Utils';
 
 export default function MemoListsItem(props) {
   const { memos } = props;
-
   /* useNavigationは
  navigationオブジェクトへのアクセスを与えるフックです。
  navigationプロパティをコンポーネントに直接渡すことができない場合、または深くネストされた子の場合に渡したくない場合に役立ちます。 */
   const navigation = useNavigation();
+
+  const deleteMemo = (id) => {
+    const { currentUser } = firebase.auth(); // 現在ログインしているユーザー
+    if (currentUser) {
+      const db = firebase.firestore();
+      const ref = db.collection(`users/${currentUser.uid}/memos`).doc(id);
+      Alert.alert('本当に削除しますか？', [
+        {
+          text: 'キャンセル',
+          onPress: () => { },
+        },
+        {
+          text: '削除する',
+          style: 'destructive',
+          onPress: () => {
+            // 成功時は時に何にもしない 失敗時のみ表示
+            ref.delete().catch(() => { Alert.alert('削除に失敗しました。'); });
+          },
+        },
+      ]);
+    }
+  };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -25,14 +47,16 @@ export default function MemoListsItem(props) {
         <Text style={styles.memoListsItemTitle} numberOfLines={1}>{item.bodyText}</Text>
         <Text style={styles.memoListsItemData}>{dateToString(item.updatedAt)}</Text>
       </View>
-      <TouchableOpacity style={styles.memoDelete}>
+      <TouchableOpacity
+        style={styles.memoDelete}
+        onPress={() => {
+          deleteMemo(item.id);
+        }}
+      >
         <Feather
           name="x"
           size={24}
           color="gray"
-          onPress={() => {
-            Alert.alert('削除しました。');
-          }}
         />
       </TouchableOpacity>
     </TouchableOpacity>

@@ -21,10 +21,10 @@ export default function MemoListScreen(props) {
   }, []);
 
   useEffect(() => {
-    const db = firebase.firestore();
     const { currentUser } = firebase.auth(); // 現在ログインしているユーザー
     let unsubscribe = () => { };
     if (currentUser) {
+      const db = firebase.firestore();
       setIsLoading(true);
       const ref = db.collection(`users/${currentUser.uid}/memos`).orderBy('updatedAt', 'desc');
       // データの取得

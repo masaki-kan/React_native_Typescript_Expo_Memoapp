@@ -21,8 +21,7 @@ export default function MemoCreateScreen(props) {
       bodyText, // キーと値が同じ場合はこの書き方で行う
       updatedAt: new Date(),
     })
-      .then((docRef) => {
-        console.log('created!', docRef.id);
+      .then(() => {
         navigation.goBack();
       })
       .catch((error) => {

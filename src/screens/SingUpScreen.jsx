@@ -5,6 +5,7 @@ import {
 import SubmitButton from '../components/SubmitButton';
 /* eslint-disable-next-line */ /* 次の文章はeslintは適応させない */
 import firebase from 'firebase';  // firebaseと接続するために必須
+import { transErrorCode } from '../Utils';
 
 export default function SingUpScreen(props) {
   /** どちらも分割代入 */
@@ -13,7 +14,7 @@ export default function SingUpScreen(props) {
   const [email, setEmail] = useState('');/* 配列から email, setEmailを取り出す */
   const [passWord, serPassWord] = useState('');
 
-  function handlePress() {
+  const handlePress = () => {
     // 登録
     firebase.auth().createUserWithEmailAndPassword(email, passWord)
       .then((userCredential) => {
@@ -25,10 +26,10 @@ export default function SingUpScreen(props) {
         });
       })
       .catch((error) => {
-        console.log(error.code, error.message);
-        Alert.alert(error.code);
+        const errorMsg = transErrorCode(error.code);
+        Alert.alert(errorMsg.title, errorMsg.description);
       });
-  }
+  };
 
   return (
     <View style={styles.container}>

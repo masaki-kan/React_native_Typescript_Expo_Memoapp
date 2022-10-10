@@ -6,6 +6,7 @@ import SubmitButton from '../components/SubmitButton';
 /* eslint-disable-next-line */ /* 次の文章はeslintは適応させない */
 import firebase from 'firebase'; // firebaseと接続するために必須
 import Loading from '../components/Loading';
+import { transErrorCode } from '../Utils';
 
 export default function LogInScreen(props) {
   /** どちらも分割代入 */
@@ -46,7 +47,8 @@ export default function LogInScreen(props) {
         });
       })
       .catch((error) => {
-        Alert.alert(error.code);
+        const errorMsg = transErrorCode(error.code);
+        Alert.alert(errorMsg.title, errorMsg.description);
       })
       .then(() => {
         setIsLoading(false);
