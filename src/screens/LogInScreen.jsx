@@ -5,6 +5,7 @@ import {
 import SubmitButton from '../components/SubmitButton';
 /* eslint-disable-next-line */ /* 次の文章はeslintは適応させない */
 import firebase from 'firebase'; // firebaseと接続するために必須
+import Loading from '../components/Loading';
 
 export default function LogInScreen(props) {
   /** どちらも分割代入 */
@@ -12,6 +13,7 @@ export default function LogInScreen(props) {
   /** 状態を保持する */
   const [email, setEmail] = useState('');/* 配列から email, setEmailを取り出す */
   const [passWord, serPassWord] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   // ログインの状態を監視
   useEffect(() => {
@@ -22,6 +24,8 @@ export default function LogInScreen(props) {
           index: 0,
           routes: [{ name: 'MemoList' }],
         });
+      } else {
+        setIsLoading(false);
       }
     });
     /* ログイン画面が消える時にキャセルする */
@@ -29,7 +33,8 @@ export default function LogInScreen(props) {
     /* 第二引数に[]を入れることで一回だけ適応 */
   }, []);
 
-  function handlePress() {
+  const handlePress = () => {
+    setIsLoading(true);
     // ログイン
     firebase.auth().signInWithEmailAndPassword(email, passWord)
       .then((userCredential) => {
@@ -42,12 +47,15 @@ export default function LogInScreen(props) {
       })
       .catch((error) => {
         Alert.alert(error.code);
+      })
+      .then(() => {
+        setIsLoading(false);
       });
-  }
+  };
 
   return (
     <View style={styles.container}>
-
+      <Loading isLoading={isLoading} />
       <View style={styles.LogInContainer}>
         <Text style={styles.title}>Login</Text>
         <TextInput

@@ -1,39 +1,61 @@
-import { PropTypes } from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet, View, Text, ScrollView,
 } from 'react-native';
+import { PropTypes } from 'prop-types';
+import firebase from 'firebase';
+import { dateToString } from '../Utils';
 
 import CircleButton from '../components/CircleButton';
 
 export default function MemoDetailScreen(props) {
-  const { navigation } = props;
+  const { navigation, route } = props;
+  const { id } = route.params;
+  const [memo, setMemo] = useState(null);
+
+  useEffect(() => {
+    const { currentUser } = firebase.auth(); // 現在ログインしているユーザー
+    let unsubscribe = () => { };
+    // 単一のドキュメント データの取得
+    if (currentUser) {
+      const db = firebase.firestore();
+      const ref = db.collection(`users/${currentUser.uid}/memos`).doc(id);
+      unsubscribe = ref.onSnapshot((doc) => {
+        const data = doc.data();
+        setMemo({
+          id: doc.id,
+          bodyText: data.bodyText,
+          updatedAt: data.updatedAt.toDate(),
+        });
+      }, (error) => {
+        console.log(error);
+      });
+    }
+    return unsubscribe;
+  }, []);
+
   return (
     <View style={styles.container}>
-
       <View style={styles.MemoHeader}>
-        <Text style={styles.MemoHeaderTitle}>買い物リスト</Text>
-        <Text style={styles.MemoHeaderDate}>2022年10月6日</Text>
+        {/* 初期値でnullを設定しているので空だとエラーが起きる */}
+        <Text style={styles.MemoHeaderTitle} numberOfLines={1}>{memo && memo.bodyText}</Text>
+        <Text style={styles.MemoHeaderDate}>{memo && dateToString(memo.updatedAt)}</Text>
       </View>
       <ScrollView style={styles.memoBody}>
         <Text style={styles.memoText}>
-          アプリケーションが成長するにつれて、型チェックによって多くの不具合を見つけられるようになります。
-          アプリケーションによっては、Flow もしくは TypeScript のような JavaScript 拡張を使ってアプリケーション全体の型チェックを行うことができるでしょう。
-          しかしそれらを使用せずとも、React は組み込みの型チェック機能を備えています。
-          コンポーネントの props に型チェックを行うために、特別な propTypes プロパティを割当てることができます。
+          {memo && memo.bodyText}
         </Text>
       </ScrollView>
       <CircleButton
         style={{ top: 60, bottom: 'auto' }}
         name="edit-2"
         onPress={() => {
-          navigation.navigate('MemoEdit');
+          navigation.navigate('MemoEdit', { id: memo.id, bodyText: memo.bodyText });
         }}
       />
     </View>
   );
 }
-
 /* app.js内のStack.Screenで登録すると自動で渡って来る
 渡って来るpropsに対しての設定は環境チームのルールによってなくても大丈夫
 無視する場合は.eslintrc.jsonのrulesプロパティに記入
@@ -41,6 +63,9 @@ export default function MemoDetailScreen(props) {
 MemoDetailScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
+  }).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({ id: PropTypes.string }),
   }).isRequired,
 };
 

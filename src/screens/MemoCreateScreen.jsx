@@ -12,7 +12,7 @@ export default function MemoCreateScreen(props) {
   const { currentUser } = firebase.auth(); // 現在ログインしているユーザー
   const { navigation } = props;
   const [bodyText, setBodyText] = useState('');
-  function handlePress() {
+  const handlePress = () => {
     const db = firebase.firestore();
     // コレクションの追加
     const ref = db.collection(`users/${currentUser.uid}/memos`);
@@ -28,7 +28,7 @@ export default function MemoCreateScreen(props) {
       .catch((error) => {
         Alert.alert('登録に失敗しました。', error.code);
       });
-  }
+  };
 
   return (
     <KeyboardAvoidingSafeView style={styles.container}>
