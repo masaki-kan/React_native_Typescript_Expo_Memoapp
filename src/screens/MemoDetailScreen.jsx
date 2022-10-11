@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet, View, Text, ScrollView,
+  StyleSheet, View, Text, ScrollView, Alert,
 } from 'react-native';
 import { PropTypes } from 'prop-types';
 import firebase from 'firebase';
@@ -27,8 +27,8 @@ export default function MemoDetailScreen(props) {
           bodyText: data.bodyText,
           updatedAt: data.updatedAt.toDate(),
         });
-      }, (error) => {
-        console.log(error);
+      }, () => {
+        Alert.alert('取得データが存在しません。');
       });
     }
     return unsubscribe;
